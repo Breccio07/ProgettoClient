@@ -16,7 +16,7 @@
             height: 100vh;
         }
 
-        .login-container {
+        #login-container {
             background-color: #ffffff;
             padding: 40px;
             border-radius: 10px;
@@ -25,7 +25,7 @@
             max-width: 400px;
         }
 
-        .login-container h2 {
+        #login-container h2 {
             text-align: center;
             margin-bottom: 30px;
             color: #333;
@@ -65,13 +65,36 @@
             background-color: #1a5edc;
         }
     </style>
+    <script>
+        "use strict"
+
+        var nome; 
+        var password;
+
+        const nomeAccount = 'admin@gmail.com';
+        const passwordAccount = '1234';
+
+        function controlloLogin(){
+            nome = document.getElementById('username').value.trim();
+            password = document.getElementById('password').value;
+
+            if(nome == nomeAccount && password == passwordAccount){
+                console.log('login effettuto');
+                var schermataLogin = document.getElementById('login-container');
+                schermataLogin.style.display='none';
+            }else{
+                console.log('email o password sbaglite');
+
+            }
+        }
+
+    </script>
 </head>
 
 <body>
 
-    <div class="login-container">
+    <div id="login-container">
         <h2>Login</h2>
-        <form action="#" method="POST">
             <div class="form-group">
                 <label for="username">Username o Email</label>
                 <input type="text" id="username" name="username" required>
@@ -80,8 +103,7 @@
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" required>
             </div>
-            <button type="submit" class="login-button">Accedi</button>
-        </form>
+            <button type="submit" class="login-button" onclick="controlloLogin()">Accedi</button>
 
     </div>
 
