@@ -64,24 +64,55 @@
         .login-button:hover {
             background-color: #1a5edc;
         }
+
+        #areaMessage {
+            display: none;
+
+
+        }
     </style>
     <script>
-        "use strict" 
-       
-         let ws = new WebSocket("ws://10.1.0.52:8090/chat25/5i1");
-        
+        "use strict"
+        function gestoreRicezione(messaggioRicevuto) {
+            document.getElementById("ricezione").textContent += messaggioRicevuto.data + "\n"; // [1]
+        }
 
-        function inviaAlServer(){
-            
-           
-            let nome = document.getElementById("username").value;
+        let nome;
+
+        let ws = new WebSocket("ws://10.1.0.52:8090/chat25/5i1");
+
+        function login() {
+            nome = document.getElementById("username").value;
             let password = document.getElementById('password').value;
 
             console.log(nome)
             console.log(password)
-            let messaggioDaInviare="log|"+nome+"|"+password;
+            let messaggioDaInviare = "log|" + nome + "|" + password;
 
-            ws.send( messaggioDaInviare );  // [3]
+            ws.send(messaggioDaInviare);  
+
+            if (ws) {
+                changeSchermata();
+            }
+        }
+        function inviaAlServer() {
+            let messaggioDaInviare = "msg|"+nome+"|2025-12-10|"+document.getElementById("msg").value;
+            ws.send(messaggioDaInviare);  
+            console.log(messaggioDaInviare); 
+        }
+        function chiudiLaConnessione() {
+            ws.close();  
+        }
+
+        function changeSchermata() {
+            let login = document.getElementById("login-container");
+            login.style.display = "none";
+            
+            let areaMessage = document.getElementById("areaMessage");
+            areaMessage.style.display = "block";
+
+
+
         }
 
     </script>
@@ -91,15 +122,23 @@
 
     <div id="login-container">
         <h2>Login</h2>
-            <div class="form-group">
-                <label for="username">Username o Email</label>
-                <input type="text" id="username" name="username" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <button type="submit" class="login-button" onclick="inviaAlServer()">Accedi</button>
+        <div class="form-group">
+            <label for="username">Username o Email</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit" class="login-button" onclick="login()">Accedi</button>
+    </div>
+
+    <div id="areaMessage">
+
+        <input id="msg" type="text">
+        <button onClick="inviaAlServer()">invia!</button>
+        <button onClick="chiudiLaConnessione()">chiudi</button>
+
 
     </div>
 </body>
