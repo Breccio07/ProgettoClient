@@ -66,26 +66,22 @@
         }
     </style>
     <script>
-        "use strict"
+        "use strict" 
+       
+         let ws = new WebSocket("ws://10.1.0.52:8090/chat25/5i1");
+        
 
-        var nome; 
-        var password;
+        function inviaAlServer(){
+            
+           
+            let nome = document.getElementById("username").value;
+            let password = document.getElementById('password').value;
 
-        const nomeAccount = 'admin@gmail.com';
-        const passwordAccount = '1234';
+            console.log(nome)
+            console.log(password)
+            let messaggioDaInviare="log|"+nome+"|"+password;
 
-        function controlloLogin(){
-            nome = document.getElementById('username').value.trim();
-            password = document.getElementById('password').value;
-
-            if(nome == nomeAccount && password == passwordAccount){
-                console.log('login effettuto');
-                var schermataLogin = document.getElementById('login-container');
-                schermataLogin.style.display='none';
-            }else{
-                console.log('email o password sbaglite');
-
-            }
+            ws.send( messaggioDaInviare );  // [3]
         }
 
     </script>
@@ -103,10 +99,9 @@
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" required>
             </div>
-            <button type="submit" class="login-button" onclick="controlloLogin()">Accedi</button>
+            <button type="submit" class="login-button" onclick="inviaAlServer()">Accedi</button>
 
     </div>
-
 </body>
 
 </html>
