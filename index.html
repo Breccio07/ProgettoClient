@@ -73,9 +73,6 @@
     </style>
     <script>
         "use strict"
-        function gestoreRicezione(messaggioRicevuto) {
-            document.getElementById("ricezione").textContent += messaggioRicevuto.data + "\n"; // [1]
-        }
 
         let nome;
 
@@ -89,10 +86,15 @@
             console.log(password)
             let messaggioDaInviare = "log|" + nome + "|" + password;
 
-            ws.send(messaggioDaInviare);  
-
-            if (ws) {
+            ws.send(messaggioDaInviare);
+            ws.onmessage = gestoreRicezione;
+        }
+        function gestoreRicezione(messaggioRicevuto) {
+            console.log(messaggioRicevuto.data);
+            if(messaggioRicevuto.data === 'rlo|login effettuato'){
                 changeSchermata();
+            }else if(messaggioRicevuto.data === 'rlo|login errato'){
+                alert('ci la madre troia')
             }
         }
         function inviaAlServer() {
