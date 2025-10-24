@@ -77,44 +77,40 @@
         let nome;
 
         let ws = new WebSocket("ws://10.1.0.52:8090/chat25/5i1");
-
         function login() {
             nome = document.getElementById("username").value;
             let password = document.getElementById('password').value;
 
-            console.log(nome)
-            console.log(password)
             let messaggioDaInviare = "log|" + nome + "|" + password;
 
             ws.send(messaggioDaInviare);
             ws.onmessage = gestoreRicezione;
         }
         function gestoreRicezione(messaggioRicevuto) {
-            console.log(messaggioRicevuto.data);
-            if(messaggioRicevuto.data === 'rlo|login effettuato'){
+            if (messaggioRicevuto.data === 'rlo|login effettuato') {
+                ws.onmessage = chat;
                 changeSchermata();
-            }else if(messaggioRicevuto.data === 'rlo|login errato'){
-                alert('ci la madre troia')
+            } else if (messaggioRicevuto.data === 'rlo|login errato') {
+                alert('username o password sono errati')
             }
         }
         function inviaAlServer() {
-            let messaggioDaInviare = "msg|"+nome+"|2025-12-10|"+document.getElementById("msg").value;
-            ws.send(messaggioDaInviare);  
-            console.log(messaggioDaInviare); 
+            let ora = new Date().toISOString();
+            let messaggioDaInviare = "msg|" + nome + "|"+ora+"|"+ document.getElementById("msg").value;
+            ws.send(messaggioDaInviare);
         }
-        function chiudiLaConnessione() {
-            ws.close();  
+        function chiudiLaConnessione(messaggioDaInviare) {
+            ws.close();
         }
-
         function changeSchermata() {
             let login = document.getElementById("login-container");
             login.style.display = "none";
-            
+
             let areaMessage = document.getElementById("areaMessage");
             areaMessage.style.display = "block";
-
-
-
+        }
+        function chat(messaggioRicevuto) {
+            document.getElementById("ricezione").textContent += messaggioRicevuto.data + "\n";
         }
 
     </script>
@@ -136,6 +132,8 @@
     </div>
 
     <div id="areaMessage">
+
+        <textarea id="ricezione" readonly></textarea><br>
 
         <input id="msg" type="text">
         <button onClick="inviaAlServer()">invia!</button>
