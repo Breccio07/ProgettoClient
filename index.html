@@ -65,12 +65,79 @@
             background-color: #1a5edc;
         }
 
+        
         #areaMessage {
             display: none;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+            width: 100%;
+            max-width: 500px;
+            
+            flex-direction: column;
+            align-items: center;
+        }
 
+        #ricezione {
+            width: 100%;
+            height: 250px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 15px;
+            resize: none;
+            margin-bottom: 15px;
+            background-color: #f9f9f9;
+            color: #333;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
+        #msg {
+            width: 100%;
+            padding: 10px;
+            font-size: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            background-color: #f9f9f9;
+            color: #333;
+            transition: border-color 0.3s ease;
+        }
+
+        #msg:focus {
+            border-color: #2575fc;
+            outline: none;
+        }
+
+     
+        #areaMessage button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            background-color: #2575fc;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+
+        #areaMessage button:hover {
+            background-color: #1a5edc;
+            transform: scale(1.03);
+        }
+
+        #areaMessage button:last-of-type {
+            background-color: #ff4b4b;
+        }
+
+        #areaMessage button:last-of-type:hover {
+            background-color: #e03b3b;
         }
     </style>
+
     <script>
         "use strict"
 
@@ -96,7 +163,7 @@
         }
         function inviaAlServer() {
             let ora = new Date().toISOString();
-            let messaggioDaInviare = "msg|" + nome + "|"+ora+"|"+ document.getElementById("msg").value;
+            let messaggioDaInviare = "msg|" + nome + "|" + ora + "|" + document.getElementById("msg").value;
             ws.send(messaggioDaInviare);
         }
         function chiudiLaConnessione(messaggioDaInviare) {
@@ -107,12 +174,11 @@
             login.style.display = "none";
 
             let areaMessage = document.getElementById("areaMessage");
-            areaMessage.style.display = "block";
+            areaMessage.style.display = "flex";
         }
         function chat(messaggioRicevuto) {
             document.getElementById("ricezione").textContent += messaggioRicevuto.data + "\n";
         }
-
     </script>
 </head>
 
@@ -132,15 +198,14 @@
     </div>
 
     <div id="areaMessage">
-
         <textarea id="ricezione" readonly></textarea><br>
-
-        <input id="msg" type="text">
-        <button onClick="inviaAlServer()">invia!</button>
-        <button onClick="chiudiLaConnessione()">chiudi</button>
-
-
+        <input id="msg" type="text" placeholder="Scrivi un messaggio...">
+        <div>
+            <button onClick="inviaAlServer()">Invia</button>
+            <button onClick="chiudiLaConnessione()">Chiudi</button>
+        </div>
     </div>
+
 </body>
 
 </html>
