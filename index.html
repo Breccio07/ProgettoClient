@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Chat 5i1</title>
     <style>
         body {
             margin: 0;
@@ -88,21 +88,26 @@
             background-color: #f9f9f9;
             color: #333;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
         .mioMessaggio {
-            background-color: purple;
+            background-color: #800080;
+            /* viola */
             color: white;
             padding: 8px 12px;
             border-radius: 10px;
             margin: 5px;
-            align-items: flex-end;
+            align-self: flex-end;
             max-width: 80%;
             word-wrap: break-word;
         }
 
         .altroMessaggio {
-            background-color: blue;
+            background-color: #0052cc;
+            /* blu */
             color: white;
             padding: 8px 12px;
             border-radius: 10px;
@@ -175,73 +180,78 @@
         }
     </style>
 
-<script>
-"use strict";
+    <script>
+        "use strict";
 
-let nome;
-let ws = new WebSocket("ws://10.1.0.52:8090/chat25/5i1");
+        let nome;
+        let ws = new WebSocket("ws://10.1.0.52:8090/chat25/5i1");
 
-ws.onmessage = gestoreGenerale;
+        ws.onmessage = gestoreGenerale;
 
-function login() {
-    nome = document.getElementById("username").value;
-    let password = document.getElementById("password").value;
-    let messaggioDaInviare = "log|" + nome + "|" + password;
-    ws.send(messaggioDaInviare);
-}
-
-function gestoreGenerale(messaggioRicevuto) {
-    let dati = messaggioRicevuto.data.split("|");
-
-    if (dati[0] === "rlo") {
-        if (dati[1] === "login effettuato") {
-            changeSchermata();
-        } else if (dati[1] === "login errato") {
-            alert("Username o password errati");
+        function login() {
+            nome = document.getElementById("username").value;
+            let password = document.getElementById("password").value;
+            let messaggioDaInviare = "log|" + nome + "|" + password;
+            ws.send(messaggioDaInviare);
         }
-    } else if (dati[0] === "msg") {
-        let mittente = dati[1];
-        let testo = dati.slice(3).join("|");
-        aggiungiMessaggio(testo, mittente);
-    }
-}
 
-function inviaAlServer() {
-    let ora = new Date().toISOString();
-    let testo = document.getElementById("msg").value;
-    let messaggioDaInviare = "msg|" + nome + "|" + ora + "|" + testo;
-    ws.send(messaggioDaInviare);
-    document.getElementById("msg").value = "";
-}
+        function gestoreGenerale(messaggioRicevuto) {
+            let dati = messaggioRicevuto.data.split("|");
 
-function aggiungiMessaggio(testo, mittente) {
-    let ricezione = document.getElementById("ricezione");
-    let msgDiv = document.createElement("div");
-    msgDiv.textContent = testo;
+            if (dati[0] === "rlo") {
+                if (dati[1] === "login effettuato") {
+                    changeSchermata();
+                } else if (dati[1] === "login errato") {
+                    alert("Username o password errati");
+                }
+            } else if (dati[0] === "msg") {
+                let mittente = dati[1];
+                let testo = dati.slice(3).join("|");
+                aggiungiMessaggio(testo, mittente);
+            }
+        }
 
-    if (mittente === nome) {
-        msgDiv.className = "mioMessaggio";
-    } else {
-        msgDiv.className = "altroMessaggio";
-    }
+        function inviaAlServer() {
+            let ora = new Date().toLocaleString("sv-SE", { timeZone: "Europe/Rome" }).replace(" ", "T"); 
+            let testo = document.getElementById("msg").value;
+            let messaggioDaInviare = "msg|" + nome + "|" + ora + "|" + testo;
+            ws.send(messaggioDaInviare);
+            document.getElementById("msg").value = "";
+        }
 
-    ricezione.appendChild(msgDiv);
-    ricezione.scrollTop = ricezione.scrollHeight;
-}
+        function aggiungiMessaggio(testo, mittente) {
+            let ricezione = document.getElementById("ricezione");
+            let msgDiv = document.createElement("div");
 
-function chiudiLaConnessione() {
-    ws.close();
-}
+            msgDiv.textContent = mittente.trim() + ": " + testo.trim();
 
-function changeSchermata() {
-    document.getElementById("login-container").style.display = "none";
-    document.getElementById("areaMessage").style.display = "flex";
-}
-</script>
+            if (mittente.trim().toLowerCase() === nome.trim().toLowerCase()) {
+                msgDiv.className = "mioMessaggio";
+            } else {
+                msgDiv.className = "altroMessaggio";
+            }
+
+            ricezione.appendChild(msgDiv);
+            ricezione.scrollTop = ricezione.scrollHeight;
+        }
+
+
+        function chiudiLaConnessione() {
+            ws.close();
+        }
+
+        function changeSchermata() {
+            document.getElementById("login-container").style.display = "none";
+            document.getElementById("areaMessage").style.display = "flex";
+        }
+    </script>
 </head>
 
 <body>
-    <h1> <img src="image/panfo-1.jpg" alt="foto del panfo">CLIENT 5i1 <img src="image/panfo-2.jpg" alt="foto del panfo">
+    <h1>
+        <img src="image/panfo-1.jpg" alt="foto del panfo">
+        CLIENT 5i1
+        <img src="image/panfo-2.jpg" alt="foto del panfo">
     </h1>
     <div id="login-container">
         <h2>Login</h2>
@@ -264,7 +274,6 @@ function changeSchermata() {
             <button onClick="chiudiLaConnessione()">Chiudi</button>
         </div>
     </div>
-
 </body>
 
 </html>
