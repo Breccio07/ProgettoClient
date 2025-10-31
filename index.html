@@ -167,7 +167,7 @@
             transform: translateX(-50%);
             color: white;
             text-align: center;
-            font-size: 28px;
+            font-size: 58px;
             display: flex;
             align-items: center;
             gap: 15px;
@@ -177,6 +177,14 @@
             width: 50px;
             height: 50px;
             border-radius: 50%;
+        }
+
+        span {
+            color: #777;
+            font-size: 8px;
+         
+            text-align: right;
+            display: block;
         }
     </style>
 
@@ -207,23 +215,23 @@
             } else if (dati[0] === "msg") {
                 let mittente = dati[1];
                 let testo = dati.slice(3).join("|");
-                aggiungiMessaggio(testo, mittente);
+                let ora = dati[2];
+                aggiungiMessaggio(testo, mittente, ora);
             }
         }
 
         function inviaAlServer() {
-            let ora = new Date().toLocaleString("sv-SE", { timeZone: "Europe/Rome" }).replace(" ", "T"); 
+            let ora = new Date().toLocaleString("sv-SE", { timeZone: "Europe/Rome" }).replace(" ", "T");
             let testo = document.getElementById("msg").value;
             let messaggioDaInviare = "msg|" + nome + "|" + ora + "|" + testo;
             ws.send(messaggioDaInviare);
             document.getElementById("msg").value = "";
         }
 
-        function aggiungiMessaggio(testo, mittente) {
+        function aggiungiMessaggio(testo, mittente, ora) {
             let ricezione = document.getElementById("ricezione");
             let msgDiv = document.createElement("div");
-
-            msgDiv.textContent = mittente.trim() + ": " + testo.trim();
+            msgDiv.innerHTML = mittente.trim() + ": " + testo.trim() + "<span>" + ora + "</span>";
 
             if (mittente.trim().toLowerCase() === nome.trim().toLowerCase()) {
                 msgDiv.className = "mioMessaggio";
@@ -238,6 +246,7 @@
 
         function chiudiLaConnessione() {
             ws.close();
+            window.location.reload();
         }
 
         function changeSchermata() {
